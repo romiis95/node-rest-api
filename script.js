@@ -1,14 +1,15 @@
 const express = require('express');
+const res = require('express/lib/response');
 const Joi = require('joi'); //used for validation
 const app = express();
 app.use(express.json());
  
 const books = [
-{title: 'Harry Potter', id: 1},
-{title: 'Twilight', id: 2},
-{title: 'Lorien Legacies', id: 3}
-]
- 
+    { id: 1, title: 'Harry Potter', author: 'J.K. Rowling', sales: 1000 },
+    { id: 2, title: 'Twilight', author: 'Stephenie Meyer', sales: 800 },
+    { id: 3, title: 'Lorien Legacies', author: 'Pittacus Lore', sales: 1200 }
+  ];
+  
 
 app.get('/', (req, res) => {
 res.send('Welcome to Edurekas REST API with Node.js Tutorial!!');
@@ -16,6 +17,10 @@ res.send('Welcome to Edurekas REST API with Node.js Tutorial!!');
  
 app.get('/api/books', (req,res)=> {
 res.send(books);
+console.log("libros");//aca imprimo los libros agregados
+console.log(books);
+res.send(books)
+
 });
  
 app.get('/api/books/:id', (req, res) => {
@@ -24,7 +29,21 @@ const book = books.find(c => c.id === parseInt(req.params.id));
 if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Ooops... Cant find what you are looking for!</h2>');
 res.send(book);
 });
- 
+app.get('/ranking',(req,res) => {
+res.send("ranking");
+})
+
+
+app.get('/api/ranking', (req, res) => {
+  // Ordena los libros por ventas en orden 
+  const rankedBooks = books
+      .slice() // Copia del array para no modificar el mismo 
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 10); // te da los primeros 10 libros
+
+  res.send(rankedBooks);
+});
+
 
 app.post('/api/books', (req, res)=> {
  
